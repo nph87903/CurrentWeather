@@ -75,6 +75,7 @@ public final class R {
         public static final int settingbutton=0x7f070016;
         public static final int tempspinner=0x7f07002d;
         public static final int temptext=0x7f070029;
+        public static final int textContent=0x7f070031;
         public static final int textView1=0x7f070002;
         public static final int textView2=0x7f070003;
         public static final int textView3=0x7f070005;

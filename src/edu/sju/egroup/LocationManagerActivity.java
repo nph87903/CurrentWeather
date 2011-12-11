@@ -122,7 +122,7 @@ public class LocationManagerActivity extends Activity implements
 			((SimpleAdapter)locationslist.getAdapter()).notifyDataSetChanged();
 			break;
 		case EDIT:
-
+/**************************/
 			break;
 		case CANCEL:
 		default:
