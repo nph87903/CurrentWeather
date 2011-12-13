@@ -28,13 +28,14 @@ public final class R {
         public static final int mist=0x7f020008;
         public static final int mostly_sunny=0x7f020009;
         public static final int na=0x7f02000a;
-        public static final int partly_cloudy=0x7f02000b;
-        public static final int partly_sunny=0x7f02000c;
-        public static final int rain=0x7f02000d;
-        public static final int set=0x7f02000e;
-        public static final int silver=0x7f02000f;
-        public static final int sunny=0x7f020010;
-        public static final int update=0x7f020011;
+        public static final int name=0x7f02000b;
+        public static final int partly_cloudy=0x7f02000c;
+        public static final int partly_sunny=0x7f02000d;
+        public static final int rain=0x7f02000e;
+        public static final int set=0x7f02000f;
+        public static final int silver=0x7f020010;
+        public static final int sunny=0x7f020011;
+        public static final int update=0x7f020012;
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f070000;

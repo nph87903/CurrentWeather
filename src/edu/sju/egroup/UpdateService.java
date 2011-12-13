@@ -18,6 +18,8 @@ import java.util.TimerTask;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.xml.sax.SAXException;
 
 import android.app.Service;
@@ -29,10 +31,12 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -68,7 +72,16 @@ public class UpdateService extends Service implements Runnable,
 	 * The settings.
 	 */
 	private SharedPreferences				settings;
-
+	/**
+	 *  MediaPlayer to play the remind sound of toDoText
+	 */
+	protected MediaPlayer mediaPlayer;
+	/**
+	 * Vibrator to perform when the todotext use it
+	 */
+	Vibrator vibrator;
+	
+	
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -273,6 +286,9 @@ public class UpdateService extends Service implements Runnable,
 	 * Get the weather data from the web
 	 * 
 	 * @return Weather information we get from web.
+	 * @throws Throwable 
+	 * @throws IllegalStateException 
+	 * @throws IllegalArgumentException 
 	 */
 	protected WeatherData retrieveWeatherInfo(String locationname) {
 		if (weatherdatacache.containsKey(locationname)) {
@@ -280,6 +296,7 @@ public class UpdateService extends Service implements Runnable,
 			if (System.currentTimeMillis() - data.updatetime < INTERVAL[settings
 					.getInt(UPDATEFREQ, 0)]) {//update time is within update interval
 				//then this weather data can be reused.
+				Remind(data);
 				return data;
 			}
 		}
@@ -305,7 +322,58 @@ public class UpdateService extends Service implements Runnable,
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		Remind(data);
 		return data;
+	}
+
+	/**
+	 * Remind something according to the weather condition
+	 * input: weather data
+	 */
+	private void Remind(WeatherData data){
+		String events = settings.getString(EVENTKEY, null);
+		ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
+		
+		//Get all the text data from the storage.
+		if (events != null) {
+			try {
+				JSONArray array = new JSONArray(events);
+				int len = array.length();
+				for (int i = 0; i < len; i++) {
+					JSONArray textData = array.getJSONArray(i);
+					ToDoTextData tData = new ToDoTextData(textData);
+					listItem.add(tData.toMap());
+				}
+			} catch (JSONException e) {
+				System.err.println(e.getClass().getName() + e.getMessage());
+			}
+		}
+		
+		//compare all the weather conditions of todotext and show them if matches
+			for (HashMap<String, Object> item : listItem) {
+				ToDoTextData tText = (ToDoTextData)item.get(EVENTKEY);
+				if (data.current.condition.contains(tText.weatherCondition))
+				{
+					Looper.prepare();
+					Toast.makeText(getApplicationContext()
+							,"It is "+ tText.weatherCondition + tText.toDoText
+							, Toast.LENGTH_SHORT).show();
+					Looper.loop();
+					if(tText.useSound==true){
+						try{
+							mediaPlayer.setDataSource(
+								"http://5.gaosu.com/download/ring/000/098/398ddd84ae6b09bfdc484502730a5aee.mp3");
+							mediaPlayer.start();
+						}catch(Exception e){}
+					}
+					if(tText.useVibration ==true){
+						vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+						long[] pattern = {800, 50, 400, 30}; // OFF/ON/OFF/ON...   
+						vibrator.vibrate(pattern, 2);
+					}
+				}
+		}
+		
 	}
 
 	/**

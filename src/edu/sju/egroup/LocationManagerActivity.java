@@ -122,6 +122,16 @@ public class LocationManagerActivity extends Activity implements
 				System.err.println(e.getClass().getName() + e.getMessage());
 			}
 		}
+		
+/*		else {
+			LocationData ldata = new LocationData();
+			ldata.name	= "CurrentLocation";
+			ldata.useGPS = true;
+			ldata.longitude =0;
+			ldata.latitude = 0;
+			data.add(ldata.toMap());
+		}*/
+		
 		return data;
 	}
 
