@@ -1,6 +1,6 @@
 /**
  * Team E, CurrentWeather
- * Principal author: Xiangdong Zhu
+ * Principal author: Xiangdong Zhu, Penghai Nie
  * UI design and icons: Yuning Zhang
  */
 package edu.sju.egroup;
